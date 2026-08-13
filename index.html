@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The Nova Group</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="images/favicon.png" rel="icon" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #08090b;
+      --bg-soft: #0f1116;
+      --panel: #12141a;
+      --text: #ffffff;
+      --muted: #9ba0aa;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #ff4d2e;
+      --accent-2: #ffb400;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 400;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Navigation ---------- */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .nav-logo img { height: 60px; width: auto; }
+    @media (max-width: 767px) {
+      .nav-logo img { height: 44px; }
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      font-size: 0.9rem;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      display: inline-block;
+      padding: 0.6rem 1.25rem;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 999px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .nav-cta:hover { transform: translateY(-1px); background: #f0f0f0; }
+    @media (max-width: 767px) {
+      .nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+    }
+
+    /* ---------- Block 01 — Hero video ---------- */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 640px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      isolation: isolate; /* stacking context so mix-blend-mode blends with video */
+    }
+    .hero-video {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.35) 100%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      padding: 0 3rem 6rem;
+      text-align: left;
+      margin: 0 auto;
+    }
+    .hero-title {
+      font-size: clamp(2.25rem, 6.5vw, 6rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0;
+      color: #ffffff;
+      mix-blend-mode: exclusion;
+      max-width: 22ch;
+      text-transform: uppercase;
+      /* isolate so the title (not the whole content) is what blends */
+    }
+    @media (max-width: 767px) {
+      .hero-content { padding: 0 1.5rem 3rem; }
+      .hero-title { font-size: 3rem; line-height: 1.02; }
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-scroll::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(180deg, var(--muted), transparent);
+      animation: scroll-pulse 2s ease-in-out infinite;
+    }
+    @keyframes scroll-pulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ---------- Section shared ---------- */
+    .section {
+      padding: 8rem 2rem;
+      position: relative;
+    }
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 4rem;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin: 0 0 1.5rem;
+    }
+    .section-lead {
+      font-size: 1.125rem;
+      line-height: 1.65;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* ---------- Block 02 — The Nova Group + brand grid ---------- */
+    .brands {
+      background: var(--bg);
+    }
+    .brand-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem;
+    }
+    .brand-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 1.25rem;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+      cursor: pointer;
+      text-align: center;
+    }
+    .brand-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+    }
+    .brand-card-media {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 0;
+    }
+    .brand-card img {
+      max-width: 75%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: grayscale(1) brightness(1.4);
+      opacity: 0.85;
+      transition: filter 0.35s ease, opacity 0.35s ease;
+    }
+    .brand-card:hover img {
+      filter: none;
+      opacity: 1;
+    }
+    .brand-card-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+    .brand-card-domain {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.15rem;
+    }
+    @media (max-width: 991px) {
+      .brand-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .brand-grid { grid-template-columns: repeat(2, 1fr); }
+      .brand-grid > .brand-card:last-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc(50% - 0.625rem); /* match single-column width incl. gap */
+      }
+    }
+
+    /* ---------- Block 03 — Client logo marquee ---------- */
+    .clients {
+      padding: 6rem 0;
+      background: var(--bg-soft);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .clients .eyebrow {
+      display: block;
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 0 2rem;
+    }
+    .marquee {
+      display: flex;
+      overflow: hidden;
+      width: 100%;
+      mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    }
+    .marquee-track {
+      display: flex;
+      flex: 0 0 auto;
+      width: max-content;
+      animation: marquee-scroll 28s linear infinite;
+    }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .marquee-group {
+      display: flex;
+      align-items: center;
+      gap: 6rem;
+      padding-right: 6rem;
+      flex: 0 0 auto;
+    }
+    .marquee-item {
+      flex: 0 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .marquee-item img {
+      max-height: 100%;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    .marquee-item:hover img { opacity: 1; }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-25%); }
+    }
+    @media (max-width: 767px) {
+      .marquee-group { gap: 3.5rem; padding-right: 3.5rem; }
+      .marquee-item { height: 40px; }
+      .marquee-item img { max-width: 140px; }
+    }
+
+    /* ---------- Block 04 — Contact ---------- */
+    .contact {
+      padding: 8rem 2rem;
+      background: var(--bg);
+      position: relative;
+    }
+    .contact::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,77,46,0.08), transparent 45%),
+        radial-gradient(circle at 80% 70%, rgba(255,180,0,0.06), transparent 45%);
+      pointer-events: none;
+    }
+    .contact-inner {
+      position: relative;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .toll-free {
+      text-align: center;
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+    .toll-free a {
+      display: inline-block;
+      margin-left: 0.75rem;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      font-weight: 700;
+      transition: color 0.2s ease;
+    }
+    .toll-free a:hover { color: var(--accent-2); }
+    .contact .section-title { text-align: center; }
+    .contact-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 1.5rem;
+      margin-top: 3rem;
+    }
+    .field { display: flex; flex-direction: column; }
+    .field.span-2 { grid-column: 1 / -1; }
+    .field label {
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .field input,
+    .field textarea {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .field textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
+    .field input:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: rgba(255,255,255,0.35);
+      background: #171a21;
+    }
+    .submit-wrap {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .submit-btn {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+      color: #0b0c10;
+      border: none;
+      padding: 1rem 3rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(255, 77, 46, 0.35);
+    }
+    @media (max-width: 640px) {
+      .contact-form { grid-template-columns: 1fr; }
+    }
+
+    /* HubSpot embedded form — style overrides so it fits the dark theme */
+    .hs-form-wrap { margin-top: 1rem; }
+    .hs-form-wrap .hs-form-frame { color: var(--text); }
+    .hs-form-wrap label,
+    .hs-form-wrap .hs-form-field > label {
+      color: var(--muted) !important;
+      font-size: 0.8rem !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+      font-weight: 500 !important;
+      margin-bottom: 0.5rem !important;
+      display: block !important;
+    }
+    .hs-form-wrap input[type="text"],
+    .hs-form-wrap input[type="email"],
+    .hs-form-wrap input[type="tel"],
+    .hs-form-wrap input[type="number"],
+    .hs-form-wrap select,
+    .hs-form-wrap textarea {
+      background: var(--panel) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 10px !important;
+      padding: 0.9rem 1rem !important;
+      color: var(--text) !important;
+      font-family: inherit !important;
+      font-size: 1rem !important;
+      width: 100% !important;
+      transition: border-color 0.2s ease, background 0.2s ease !important;
+    }
+    .hs-form-wrap textarea { min-height: 140px !important; resize: vertical !important; }
+    .hs-form-wrap input:focus,
+    .hs-form-wrap textarea:focus,
+    .hs-form-wrap select:focus {
+      outline: none !important;
+      border-color: rgba(255,255,255,0.35) !important;
+      background: #171a21 !important;
+    }
+    .hs-form-wrap .hs-button,
+    .hs-form-wrap input[type="submit"] {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%) !important;
+      color: #0b0c10 !important;
+      border: none !important;
+      padding: 1rem 3rem !important;
+      font-family: inherit !important;
+      font-size: 0.95rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.15em !important;
+      text-transform: uppercase !important;
+      border-radius: 999px !important;
+      cursor: pointer !important;
+      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+      display: inline-block !important;
+      margin-top: 1rem !important;
+    }
+    .hs-form-wrap .hs-button:hover,
+    .hs-form-wrap input[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(255, 77, 46, 0.35);
+    }
+    .hs-form-wrap .hs-error-msgs,
+    .hs-form-wrap .hs-error-msg {
+      color: #ff7a5c !important;
+      font-size: 0.8rem !important;
+      list-style: none !important;
+      padding-left: 0 !important;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .footer-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .footer img { height: 56px; width: auto; }
+    .footer-credit { color: var(--muted); font-size: 0.85rem; }
+    .footer-site {
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      transition: color 0.2s ease;
+    }
+    .footer-site:hover { color: var(--text); }
+
+    /* ---------- Reveal on scroll (progressive enhancement) ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= NAV ================= -->
+  <nav class="nav">
+    <a href="#" class="nav-logo"><img src="images/the_nova_group_aus_logo-1.png" alt="The Nova Group"></a>
+    <a href="#contact" class="nav-cta">Get started</a>
+  </nav>
+
+  <!-- ================= BLOCK 01 — HERO ================= -->
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline poster="videos/5039499-uhd_4096_2160_25fps_poster.0000000.jpg">
+      <source src="16273480_1920_1080_60fps.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">We inspire brands and people to impact the world</h1>
+    </div>
+  </section>
+
+  <!-- ================= BLOCK 02 — THE NOVA GROUP ================= -->
+  <section id="about" class="section brands">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">About</span>
+        <h2 class="section-title">The Nova Group</h2>
+        <p class="section-lead">Shaped local culture through iconic marketing for more than five decades. Today, the award-winning agency continues to redefine industry standards by blending deep heritage with modern, data-driven innovation.</p>
+      </div>
+      <div id="brands" class="brand-grid reveal">
+        <a href="https://www.nova4you.com.au" target="_blank" rel="noopener" class="brand-card">
+          <div class="brand-card-media"><img src="images/Screenshot-2026-07-24-at-10.30.50-am-1.png" alt="Nova"></div>
+          <div>
+            <div class="brand-card-name">Nova</div>
+            <div class="brand-card-domain">nova4you.com.au</div>
+          </div>
+        </a>
+        <a href="https://www.enova.com.au" target="_blank" rel="noopener" class="brand-card">
+          <div class="brand-card-media"><img src="images/Screenshot-2026-07-24-at-10.31.19-am-1.png" alt="Enova"></div>
+          <div>
+            <div class="brand-card-name">Enova</div>
+            <div class="brand-card-domain">enova.com.au</div>
+          </div>
+        </a>
+        <a href="https://www.novatools.io" target="_blank" rel="noopener" class="brand-card">
+          <div class="brand-card-media"><img src="images/Screenshot-2026-07-24-at-10.31.30-am-1.png" alt="Novatools"></div>
+          <div>
+            <div class="brand-card-name">Novatools</div>
+            <div class="brand-card-domain">novatools.io</div>
+          </div>
+        </a>
+        <a href="https://www.daronet.com.au" target="_blank" rel="noopener" class="brand-card">
+          <div class="brand-card-media"><img src="images/Group-1.png" alt="Daronet"></div>
+          <div>
+            <div class="brand-card-name">Daronet</div>
+            <div class="brand-card-domain">daronet.com.au</div>
+          </div>
+        </a>
+        <a href="https://turbamedia.io/" target="_blank" rel="noopener" class="brand-card">
+          <div class="brand-card-media"><img src="images/images-1.png" alt="Turba Media"></div>
+          <div>
+            <div class="brand-card-name">Turba Media</div>
+            <div class="brand-card-domain">turbamedia.io</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BLOCK 03 — CLIENT MARQUEE ================= -->
+  <section id="clients" class="clients">
+    <span class="eyebrow">Trusted by industry leaders</span>
+    <div class="marquee" aria-label="Client logos">
+      <div class="marquee-track">
+        <div class="marquee-group">
+          <div class="marquee-item"><img src="jll-logo.png" alt="JLL"></div>
+          <div class="marquee-item"><img src="ibm-logo.png" alt="IBM"></div>
+          <div class="marquee-item"><img src="disney-logo.png" alt="Disney"></div>
+          <div class="marquee-item"><img src="fifa-logo.png" alt="FIFA"></div>
+          <div class="marquee-item"><img src="netflix-logo.png" alt="Netflix"></div>
+        </div>
+        <div class="marquee-group" aria-hidden="true">
+          <div class="marquee-item"><img src="jll-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="ibm-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="disney-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="fifa-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="netflix-logo.png" alt=""></div>
+        </div>
+        <div class="marquee-group" aria-hidden="true">
+          <div class="marquee-item"><img src="jll-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="ibm-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="disney-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="fifa-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="netflix-logo.png" alt=""></div>
+        </div>
+        <div class="marquee-group" aria-hidden="true">
+          <div class="marquee-item"><img src="jll-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="ibm-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="disney-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="fifa-logo.png" alt=""></div>
+          <div class="marquee-item"><img src="netflix-logo.png" alt=""></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BLOCK 04 — CONTACT ================= -->
+  <section id="contact" class="contact">
+    <div class="contact-inner">
+      <div class="toll-free reveal">Toll Free<a href="tel:1300926895">1 300 926 895</a></div>
+      <div class="hs-form-wrap reveal">
+        <script src="https://js.hsforms.net/forms/embed/44484340.js" defer></script>
+        <div class="hs-form-frame" data-region="na1" data-form-id="68e1f3c6-b6a3-42fe-a699-b0cc17730c7c" data-portal-id="44484340"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <img src="images/the_nova_group_aus_logo-1.png" alt="The Nova Group">
+      <a href="https://www.thenovagroup.com.au" class="footer-site">www.thenovagroup.com.au</a>
+      <div class="footer-credit">© 2026 The Nova Group. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    // Reveal-on-scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
