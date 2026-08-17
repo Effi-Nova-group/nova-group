@@ -14,6 +14,8 @@ const blog = defineCollection({
     metaDescription: z.string(),
     ctaHeading: z.string(),
     ctaBody: z.string(),
+    publishedAt: z.coerce.date(),
+    author: z.string().default('Efraim Shwintarsky'),
   }),
 });
 

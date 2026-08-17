@@ -13,12 +13,46 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+const siteUrl = 'https://www.thenovagroup.com.au';
+const articleUrl = `${siteUrl}/blog/${post.id}`;
+const imageUrl = new URL(post.data.image.src, siteUrl).toString();
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  '@id': `${articleUrl}#article`,
+  mainEntityOfPage: articleUrl,
+  headline: post.data.title,
+  description: post.data.metaDescription,
+  image: [imageUrl],
+  url: articleUrl,
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: post.data.publishedAt.toISOString(),
+  articleSection: post.data.category,
+  inLanguage: 'en-AU',
+  author: {
+    '@type': 'Person',
+    name: post.data.author,
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': `${siteUrl}/#organization`,
+    name: 'The Nova Group',
+    url: `${siteUrl}/`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${siteUrl}/images/the_nova_group_aus_logo-1.png`,
+    },
+  },
+};
 ---
 <BaseLayout
   title={post.data.metaTitle}
   description={post.data.metaDescription}
   ogType="article"
   ogImage={new URL(post.data.image.src, Astro.site).toString()}
+  schema={schema}
 >
   <article class="article">
     <a href="/blog" class="article-back">← All insights</a>
@@ -26,7 +60,7 @@ const { Content } = await render(post);
     <h1>{post.data.title}</h1>
     <div class="article-meta">
       <span>{post.data.readTime}</span>
-      <span>The Nova Group</span>
+      <span>{post.data.author}</span>
     </div>
 
     <div class="article-hero"><Image src={post.data.image} alt={post.data.title} widths={[640, 960, 1400]} sizes="(max-width: 991px) 100vw, 960px" loading="eager" /></div>

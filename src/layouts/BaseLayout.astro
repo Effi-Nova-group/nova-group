@@ -9,6 +9,7 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   ogType?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -17,6 +18,7 @@ const {
   canonical,
   ogImage = 'https://www.thenovagroup.com.au/images/the_nova_group_aus_logo-1.png',
   ogType = 'website',
+  schema,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
@@ -46,6 +48,10 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toStri
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  {schema && (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  )}
 </head>
 <body>
   <Nav />

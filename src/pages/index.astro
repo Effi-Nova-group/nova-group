@@ -15,10 +15,44 @@ const brands = [
   { href: 'https://daronet.com.au/', name: 'Daronet', domain: 'daronet.com.au', img: '/images/Group-1.png' },
   { href: 'https://turbamedia.io/', name: 'Turba Media', domain: 'turbamedia.io', img: '/images/images-1.png' },
 ];
+
+const siteUrl = 'https://www.thenovagroup.com.au';
+const logoUrl = `${siteUrl}/images/the_nova_group_aus_logo-1.png`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
+  name: 'The Nova Group',
+  legalName: 'The Nova Group',
+  url: `${siteUrl}/`,
+  logo: {
+    '@type': 'ImageObject',
+    url: logoUrl,
+  },
+  description: 'The Nova Group is an award-winning marketing and media agency with over 30 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media.',
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: 'AU',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+61-1300-926-895',
+    contactType: 'customer service',
+    areaServed: 'AU',
+    availableLanguage: 'English',
+  },
+  subOrganization: brands.map((b) => ({
+    '@type': 'Organization',
+    name: b.name,
+    url: b.href,
+  })),
+};
 ---
 <BaseLayout
   title="The Nova Group | Award-Winning Marketing & Media Agency"
   description="The Nova Group is an award-winning marketing and media agency with over 30 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media."
+  schema={schema}
 >
   <section class="hero">
     <video class="hero-video" autoplay muted loop playsinline poster="/videos/5039499-uhd_4096_2160_25fps_poster.0000000.jpg">

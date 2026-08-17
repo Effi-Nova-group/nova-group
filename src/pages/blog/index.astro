@@ -4,10 +4,37 @@ import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog')).sort((a, b) => a.data.order - b.data.order);
+
+const siteUrl = 'https://www.thenovagroup.com.au';
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  '@id': `${siteUrl}/blog#blog`,
+  name: 'Insights | The Nova Group',
+  description: 'Insights and analysis from The Nova Group — behavioral science, data-driven innovation, and modern marketing strategy for Australian brands.',
+  url: `${siteUrl}/blog`,
+  publisher: {
+    '@type': 'Organization',
+    '@id': `${siteUrl}/#organization`,
+    name: 'The Nova Group',
+    url: `${siteUrl}/`,
+    logo: `${siteUrl}/images/the_nova_group_aus_logo-1.png`,
+  },
+  blogPost: posts.map((post) => ({
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    description: post.data.metaDescription,
+    url: `${siteUrl}/blog/${post.id}`,
+    image: new URL(post.data.image.src, siteUrl).toString(),
+    datePublished: post.data.publishedAt.toISOString(),
+    author: { '@type': 'Person', name: post.data.author },
+  })),
+};
 ---
 <BaseLayout
   title="Insights | The Nova Group"
   description="Insights and analysis from The Nova Group — behavioral science, data-driven innovation, and modern marketing strategy for Australian brands."
+  schema={schema}
 >
   <header class="page-header">
     <span class="eyebrow">Insights</span>

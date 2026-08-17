@@ -9,6 +9,7 @@ metaTitle: "Driving B2B Digital Transformation | The Nova Group"
 metaDescription: "The intersection of heritage, data, and behavioral science. How established B2B enterprises can transition into the modern digital age."
 ctaHeading: "Modernize your B2B growth engine."
 ctaBody: "Talk to The Nova Group about digital transformation."
+publishedAt: 2026-08-17
 ---
 
 For decades, business-to-business (B2B) marketing relied almost entirely on traditional relationships: handshakes, trade shows, print catalogs, and direct outbound sales teams. While human connections remain vital, the modern B2B buying process has moved online. Today’s business buyers do extensive digital research before contacting a sales representative.

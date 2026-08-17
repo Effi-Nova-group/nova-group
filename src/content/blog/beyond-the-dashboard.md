@@ -9,6 +9,7 @@ metaTitle: "Beyond the Dashboard | The Nova Group"
 metaDescription: "Navigating the future of data-driven digital innovation. Predictive analytics, hyper-personalization, and cross-channel attribution modeling."
 ctaHeading: "Turn data into growth."
 ctaBody: "Talk to The Nova Group about building a data-driven marketing engine."
+publishedAt: 2026-08-17
 ---
 
 Data is often called the new oil, but raw data alone will not scale a business. In today’s complex digital landscape, the companies that succeed are not those with the most data, but those that know how to turn raw metrics into actionable customer experiences.

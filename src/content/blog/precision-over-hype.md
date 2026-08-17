@@ -9,6 +9,7 @@ metaTitle: "Precision Over Hype | The Nova Group"
 metaDescription: "Navigating performance marketing and advanced SEO in Australia. E-E-A-T, semantic search, Core Web Vitals, PPC and conversion rate optimisation."
 ctaHeading: "Turn every marketing dollar into measurable growth."
 ctaBody: "Talk to The Nova Group about performance marketing and SEO."
+publishedAt: 2026-08-17
 ---
 
 The digital advertising landscape has become highly competitive. Businesses can no longer afford to throw money at generic advertising campaigns and hope for the best. To survive and scale in today's fast-moving market, organizations must shift toward performance marketing and advanced search engine optimization (SEO)—strategies where every dollar spent is tracked, measured, and tied directly to business revenue.

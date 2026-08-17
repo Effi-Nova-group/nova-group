@@ -9,6 +9,7 @@ metaTitle: "Redefining Customer Engagement | The Nova Group"
 metaDescription: "Creative strategies for the modern omnichannel world. Immersive digital experiences, behavioral automation, and value-first content marketing."
 ctaHeading: "Build a customer experience that stands out."
 ctaBody: "Talk to The Nova Group about your omnichannel strategy."
+publishedAt: 2026-08-17
 ---
 
 The modern consumer does not interact with businesses in a vacuum. They move seamlessly between smartphones, laptops, retail spaces, and social media feeds. In this hyper-connected market, traditional single-channel marketing is no longer sufficient. To capture attention and build brand loyalty, companies must deploy sophisticated, creative customer engagement strategies that span the entire digital ecosystem.
