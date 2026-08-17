@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout
+  title="Insights | The Nova Group"
+  description="Insights and analysis from The Nova Group — behavioral science, data-driven innovation, and modern marketing strategy for Australian brands."
+>
+  <header class="page-header">
+    <span class="eyebrow">Insights</span>
+    <h1>Ideas that shape modern marketing</h1>
+    <p>Strategy, behavioral science, and data-driven innovation — insights from an award-winning Australian agency shaping local culture for more than three decades.</p>
+  </header>
+
+  <section class="blog-list">
+    <div class="blog-grid">
+      {posts.map((post) => (
+        <a href={`/blog/${post.id}`} class="article-card">
+          <div class="article-card-media"><Image src={post.data.image} alt={post.data.title} widths={[400, 640, 900]} sizes="(max-width: 620px) 100vw, (max-width: 991px) 50vw, 400px" loading="lazy" /></div>
+          <div class="article-card-body">
+            <span class="article-card-category" set:html={post.data.category}></span>
+            <h2 class="article-card-title">{post.data.title}</h2>
+            <p class="article-card-excerpt">{post.data.excerpt}</p>
+            <div class="article-card-meta">
+              <span>{post.data.readTime}</span>
+              <span class="article-card-link">Read article</span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

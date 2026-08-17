@@ -1,0 +1,35 @@
+---
+const logos = [
+  { src: '/jll-logo.png', alt: 'JLL', detailed: false },
+  { src: '/ibm-logo.png', alt: 'IBM', detailed: false },
+  { src: '/disney-logo.png', alt: 'Disney', detailed: false },
+  { src: '/fifa-logo.png', alt: 'FIFA', detailed: false },
+  { src: '/netflix-logo.png', alt: 'Netflix', detailed: false },
+  { src: '/images/deloitte-logo.png', alt: 'Deloitte', detailed: false },
+  { src: '/images/gartner-logo.png', alt: 'Gartner', detailed: false },
+  { src: '/images/porsche-logo.png', alt: 'Porsche', detailed: true },
+  { src: '/images/lv-logo.png', alt: 'Louis Vuitton', detailed: false },
+  { src: '/images/gnc-logo.png', alt: 'GNC', detailed: false },
+  { src: '/images/winnings-logo.png', alt: 'Winnings', detailed: false },
+  { src: '/images/appliances-logo.png', alt: 'Appliances Online', detailed: false },
+  { src: '/images/f1-logo.png', alt: 'Formula 1', detailed: false },
+];
+
+const groupCount = 4;
+---
+<section id="clients" class="clients">
+  <span class="eyebrow">Trusted by industry leaders</span>
+  <div class="marquee" aria-label="Client logos">
+    <div class="marquee-track">
+      {Array.from({ length: groupCount }).map((_, groupIdx) => (
+        <div class="marquee-group" aria-hidden={groupIdx > 0 ? 'true' : undefined}>
+          {logos.map((logo) => (
+            <div class={`marquee-item${logo.detailed ? ' is-detailed' : ''}`}>
+              <img src={logo.src} alt={groupIdx === 0 ? logo.alt : ''} loading="lazy" decoding="async" />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

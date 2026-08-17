@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Marquee from '../components/Marquee.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+const brands = [
+  { href: 'https://nova4you.com.au/', name: 'Nova', domain: 'nova4you.com.au', img: '/images/Screenshot-2026-07-24-at-10.30.50-am-1.png' },
+  { href: 'https://www.enova.com.au', name: 'Enova', domain: 'enova.com.au', img: '/images/Screenshot-2026-07-24-at-10.31.19-am-1.png' },
+  { href: 'https://novatools.io/', name: 'Novatools', domain: 'novatools.io', img: '/images/Screenshot-2026-07-24-at-10.31.30-am-1.png' },
+  { href: 'https://daronet.com.au/', name: 'Daronet', domain: 'daronet.com.au', img: '/images/Group-1.png' },
+  { href: 'https://turbamedia.io/', name: 'Turba Media', domain: 'turbamedia.io', img: '/images/images-1.png' },
+];
+---
+<BaseLayout
+  title="The Nova Group | Award-Winning Marketing & Media Agency"
+  description="The Nova Group is an award-winning marketing and media agency with over 30 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media."
+>
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline poster="/videos/5039499-uhd_4096_2160_25fps_poster.0000000.jpg">
+      <source src="/16273480_1920_1080_60fps.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">We inspire brands and people to impact the world</h1>
+    </div>
+  </section>
+
+  <section id="about" class="section brands">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">About</span>
+        <h2 class="section-title">The Nova Group</h2>
+        <p class="section-lead">Shaped local culture through iconic marketing for more than three decades. Today, the award-winning agency continues to redefine industry standards by blending deep heritage with modern, data-driven innovation.</p>
+      </div>
+      <div id="brands" class="brand-grid reveal">
+        {brands.map((brand) => (
+          <a href={brand.href} target="_blank" rel="noopener" class="brand-card">
+            <div class="brand-card-media"><img src={brand.img} alt={brand.name} loading="lazy" decoding="async"></div>
+            <div>
+              <div class="brand-card-name">{brand.name}</div>
+              <div class="brand-card-domain">{brand.domain}</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Marquee />
+
+  <section id="insights" class="insights">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Insights</span>
+        <h2 class="section-title">Ideas that shape modern marketing</h2>
+        <p class="section-lead">Strategy, behavioral science, and data-driven innovation — the thinking behind our work.</p>
+      </div>
+      <div class="insights-grid reveal">
+        {posts.map((post) => (
+          <a href={`/blog/${post.id}`} class="insight-card">
+            <div class="insight-card-media"><Image src={post.data.image} alt={post.data.title} widths={[400, 640, 900]} sizes="(max-width: 620px) 100vw, (max-width: 991px) 50vw, 400px" loading="lazy" /></div>
+            <div class="insight-card-body">
+              <span class="insight-card-category" set:html={post.data.category}></span>
+              <h3 class="insight-card-title">{post.data.title}</h3>
+              <p class="insight-card-excerpt">{post.data.excerpt}</p>
+              <div class="insight-card-meta">
+                <span>{post.data.readTime}</span>
+                <span class="insight-card-link">Read article</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="insights-cta reveal">
+        <a href="/blog">View all articles</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="contact-inner">
+      <div class="toll-free reveal">Toll Free<a href="tel:1300926895">1 300 926 895</a></div>
+      <div class="hs-form-wrap reveal">
+        <script src="https://js.hsforms.net/forms/embed/44484340.js" defer></script>
+        <div class="hs-form-frame" data-region="na1" data-form-id="68e1f3c6-b6a3-42fe-a699-b0cc17730c7c" data-portal-id="44484340"></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

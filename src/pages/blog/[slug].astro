@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout
+  title={post.data.metaTitle}
+  description={post.data.metaDescription}
+  ogType="article"
+  ogImage={new URL(post.data.image.src, Astro.site).toString()}
+>
+  <article class="article">
+    <a href="/blog" class="article-back">← All insights</a>
+    <span class="article-category" set:html={post.data.category}></span>
+    <h1>{post.data.title}</h1>
+    <div class="article-meta">
+      <span>{post.data.readTime}</span>
+      <span>The Nova Group</span>
+    </div>
+
+    <div class="article-hero"><Image src={post.data.image} alt={post.data.title} widths={[640, 960, 1400]} sizes="(max-width: 991px) 100vw, 960px" loading="eager" /></div>
+
+    <div class="article-body">
+      <Content />
+
+      <div class="article-cta">
+        <h3>{post.data.ctaHeading}</h3>
+        <p>{post.data.ctaBody}</p>
+        <a href="/#contact">Get started</a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
