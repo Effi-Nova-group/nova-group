@@ -58,11 +58,40 @@ const schema = {
     <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="/images/hero-poster.jpg">
       <source src="/16273480_1920_1080_60fps.mp4" type="video/mp4">
     </video>
+    <canvas class="hero-canvas" aria-hidden="true"></canvas>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1 class="hero-title">We inspire brands and people to impact the world</h1>
     </div>
   </section>
+
+  <script>
+    // iOS Safari won't blend HTML mix-blend-mode against <video> (video runs
+    // in a separate compositor layer). On mobile we mirror the video into a
+    // <canvas> — canvas lives in the HTML layer so blend works against it.
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      const video = document.querySelector('.hero-video') as HTMLVideoElement | null;
+      const canvas = document.querySelector('.hero-canvas') as HTMLCanvasElement | null;
+      if (video && canvas) {
+        const ctx = canvas.getContext('2d');
+        let running = false;
+        const draw = () => {
+          if (!ctx || video.readyState < 2) {
+            requestAnimationFrame(draw);
+            return;
+          }
+          if (canvas.width !== video.videoWidth) canvas.width = video.videoWidth;
+          if (canvas.height !== video.videoHeight) canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          requestAnimationFrame(draw);
+        };
+        const start = () => { if (!running) { running = true; draw(); } };
+        video.addEventListener('playing', start, { once: false });
+        video.addEventListener('loadeddata', start, { once: false });
+        video.play().catch(() => {});
+      }
+    }
+  </script>
 
   <section id="about" class="section brands">
     <div class="container">
