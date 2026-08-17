@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <title>The Nova Group | Award-Winning Marketing & Media Agency</title>
-  <meta name="description" content="The Nova Group is an award-winning marketing and media agency with over 50 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media.">
+  <meta name="description" content="The Nova Group is an award-winning marketing and media agency with over 30 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://www.thenovagroup.com.au/">
 
   <!-- Open Graph -->
   <meta property="og:title" content="The Nova Group | Award-Winning Marketing & Media Agency">
-  <meta property="og:description" content="The Nova Group is an award-winning marketing and media agency with over 50 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media.">
+  <meta property="og:description" content="The Nova Group is an award-winning marketing and media agency with over 30 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media.">
   <meta property="og:image" content="https://www.thenovagroup.com.au/images/the_nova_group_aus_logo-1.png">
   <meta property="og:url" content="https://www.thenovagroup.com.au/">
   <meta property="og:type" content="website">
@@ -18,7 +18,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Nova Group | Award-Winning Marketing & Media Agency">
-  <meta name="twitter:description" content="The Nova Group is an award-winning marketing and media agency with over 50 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media.">
+  <meta name="twitter:description" content="The Nova Group is an award-winning marketing and media agency with over 30 years of heritage — home to Nova, Enova, Novatools, Daronet and Turba Media.">
   <meta name="twitter:image" content="https://www.thenovagroup.com.au/images/the_nova_group_aus_logo-1.png">
 
   <link href="images/favicon.png" rel="icon" type="image/png">
@@ -34,6 +34,7 @@
       --muted: #9ba0aa;
       --border: rgba(255, 255, 255, 0.08);
       --accent: #ff4d2e;
+      --accent-red: #ff4d2e;
       --accent-2: #ffb400;
     }
 
@@ -57,14 +58,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 2.5rem;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      padding: 0.9rem 5rem;
+      background: #000;
     }
-    .nav-logo img { height: 60px; width: auto; }
+    .nav-logo img { height: 64px; width: auto; }
     @media (max-width: 767px) {
-      .nav-logo img { height: 44px; }
+      .nav-logo img { height: 48px; }
     }
     .nav-links { display: flex; gap: 2rem; }
     .nav-links a {
@@ -74,19 +73,26 @@
     }
     .nav-links a:hover { color: var(--text); }
     .nav-cta {
-      display: inline-block;
-      padding: 0.6rem 1.25rem;
-      background: var(--text);
-      color: var(--bg);
-      font-size: 0.85rem;
-      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2.25rem;
+      color: #ffffff;
+      border: 1.5px solid transparent;
+      background:
+        linear-gradient(#000, #000) padding-box,
+        linear-gradient(90deg, var(--accent-red) 0%, #ffffff 50%, var(--accent-red) 100%) border-box;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1;
       border-radius: 999px;
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition: filter 0.2s ease;
     }
-    .nav-cta:hover { transform: translateY(-1px); background: #f0f0f0; }
+    .nav-cta:hover { filter: brightness(1.15); }
     @media (max-width: 767px) {
-      .nav { padding: 1rem 1.25rem; }
+      .nav { padding: 0.85rem 1.5rem; }
       .nav-links { display: none; }
+      .nav-cta { display: none; }
     }
 
     /* ---------- Block 01 — Hero video ---------- */
@@ -573,7 +579,7 @@
       <div class="section-header reveal">
         <span class="eyebrow">About</span>
         <h2 class="section-title">The Nova Group</h2>
-        <p class="section-lead">Shaped local culture through iconic marketing for more than five decades. Today, the award-winning agency continues to redefine industry standards by blending deep heritage with modern, data-driven innovation.</p>
+        <p class="section-lead">Shaped local culture through iconic marketing for more than three decades. Today, the award-winning agency continues to redefine industry standards by blending deep heritage with modern, data-driven innovation.</p>
       </div>
       <div id="brands" class="brand-grid reveal">
         <a href="https://nova4you.com.au/" target="_blank" rel="noopener" class="brand-card">
