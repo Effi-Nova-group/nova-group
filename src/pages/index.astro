@@ -66,29 +66,98 @@ const schema = {
   </section>
 
   <script>
-    // iOS Safari won't blend HTML mix-blend-mode against <video> (video runs
-    // in a separate compositor layer). On mobile we mirror the video into a
-    // <canvas> — canvas lives in the HTML layer so blend works against it.
+    // iOS Safari + mobile Chrome cache the blend layer when mix-blend-mode
+    // is applied over <video>, freezing the text on the first frame. Fix by
+    // rendering the entire effect inside <canvas>: draw the current video
+    // frame, then composite the text on top with globalCompositeOperation
+    // 'exclusion' (mirrors the desktop mix-blend-mode:exclusion). Canvas
+    // repaints every frame so nothing gets cached.
     if (window.matchMedia('(max-width: 767px)').matches) {
       const video = document.querySelector('.hero-video') as HTMLVideoElement | null;
       const canvas = document.querySelector('.hero-canvas') as HTMLCanvasElement | null;
-      if (video && canvas) {
+      const hero = document.querySelector('.hero') as HTMLElement | null;
+      const heroTitle = document.querySelector('.hero-title') as HTMLElement | null;
+
+      if (video && canvas && hero && heroTitle) {
         const ctx = canvas.getContext('2d');
-        let running = false;
-        const draw = () => {
-          if (!ctx || video.readyState < 2) {
-            requestAnimationFrame(draw);
-            return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        const resize = () => {
+          const rect = hero.getBoundingClientRect();
+          canvas.width = Math.floor(rect.width * dpr);
+          canvas.height = Math.floor(rect.height * dpr);
+          canvas.style.width = rect.width + 'px';
+          canvas.style.height = rect.height + 'px';
+        };
+
+        const wrap = (text: string, maxWidth: number): string[] => {
+          if (!ctx) return [text];
+          const words = text.split(/\s+/);
+          const lines: string[] = [];
+          let line = words[0] || '';
+          for (let i = 1; i < words.length; i++) {
+            const test = line + ' ' + words[i];
+            if (ctx.measureText(test).width <= maxWidth) {
+              line = test;
+            } else {
+              lines.push(line);
+              line = words[i];
+            }
           }
-          if (canvas.width !== video.videoWidth) canvas.width = video.videoWidth;
-          if (canvas.height !== video.videoHeight) canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          if (line) lines.push(line);
+          return lines;
+        };
+
+        const draw = () => {
+          if (!ctx) return;
+          if (video.readyState >= 2 && video.videoWidth) {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // 1. Video frame (object-fit: cover math)
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.clearRect(0, 0, w, h);
+            const vw = video.videoWidth;
+            const vh = video.videoHeight;
+            const scale = Math.max(w / vw, h / vh);
+            const dw = vw * scale;
+            const dh = vh * scale;
+            ctx.drawImage(video, (w - dw) / 2, (h - dh) / 2, dw, dh);
+
+            // 2. Text composited over video with exclusion blend
+            const cs = getComputedStyle(heroTitle);
+            const fontSize = parseFloat(cs.fontSize) * dpr;
+            const fontWeight = cs.fontWeight || '800';
+            const fontFamily = cs.fontFamily || 'Inter, sans-serif';
+            const lineHeight = fontSize * 1.02;
+
+            ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = '#ffffff';
+
+            const heroRect = hero.getBoundingClientRect();
+            const titleRect = heroTitle.getBoundingClientRect();
+            const x = (titleRect.left - heroRect.left) * dpr;
+            const y = (titleRect.top - heroRect.top) * dpr;
+            const maxWidth = Math.max(titleRect.width * dpr, 100);
+
+            const text = (heroTitle.textContent || '').trim().toUpperCase();
+            const lines = wrap(text, maxWidth);
+
+            ctx.globalCompositeOperation = 'exclusion';
+            lines.forEach((line, i) => {
+              ctx.fillText(line, x, y + i * lineHeight);
+            });
+            ctx.globalCompositeOperation = 'source-over';
+          }
           requestAnimationFrame(draw);
         };
-        const start = () => { if (!running) { running = true; draw(); } };
-        video.addEventListener('playing', start, { once: false });
-        video.addEventListener('loadeddata', start, { once: false });
+
+        resize();
+        window.addEventListener('resize', resize);
+        video.addEventListener('loadedmetadata', resize);
         video.play().catch(() => {});
+        requestAnimationFrame(draw);
       }
     }
   </script>

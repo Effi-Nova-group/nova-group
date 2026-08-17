@@ -138,9 +138,12 @@ a { color: inherit; text-decoration: none; }
   .hero-title {
     font-size: 3rem;
     line-height: 1.02;
-    /* mix-blend-mode on the base rule still applies — on mobile it composes
-       against the <canvas> mirror of the video (canvas is in the HTML layer,
-       unlike <video> which iOS Safari renders separately). */
+    /* HTML title is hidden visually — the canvas renders the exclusion-
+       blended version. Kept in the DOM (color: transparent, not display:none)
+       so screen readers still announce it and the layout box the canvas
+       reads from stays intact. */
+    color: transparent;
+    mix-blend-mode: normal;
   }
 }
 .hero-scroll {
