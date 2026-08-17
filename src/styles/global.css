@@ -132,7 +132,7 @@ a { color: inherit; text-decoration: none; }
        desktop exclusion look. */
     mix-blend-mode: normal;
     color: transparent;
-    background-image: url('/videos/5039499-uhd_4096_2160_25fps_poster.0000000.jpg');
+    background-image: url('/images/hero-poster.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
