@@ -1,0 +1,13 @@
+{
+  "name": "The Nova Group",
+  "short_name": "Nova Group",
+  "icons": [
+    { "src": "/favicon-48.png", "sizes": "48x48", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "theme_color": "#08090b",
+  "background_color": "#08090b",
+  "display": "standalone",
+  "start_url": "/"
+}
