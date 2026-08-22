@@ -10,6 +10,7 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   ogImage = 'https://www.thenovagroup.com.au/images/the_nova_group_aus_logo-1.png',
   ogType = 'website',
   schema,
+  noindex = false,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
@@ -30,6 +32,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toStri
   <title>{title}</title>
   <meta name="description" content={description}>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {noindex && <meta name="robots" content="noindex, follow">}
   <link rel="canonical" href={canonicalUrl}>
 
   <meta property="og:title" content={title}>
