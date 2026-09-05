@@ -1,0 +1,78 @@
+---
+export interface Props {
+  id: string;
+  name?: string;
+  label?: string;
+  required?: boolean;
+  initialCountry?: string;
+  placeholder?: string;
+  autocomplete?: string;
+}
+
+const {
+  id,
+  name = "phone",
+  label = "Phone Number*",
+  required = false,
+  initialCountry = "au",
+  placeholder = "0412 345 678",
+  autocomplete = "tel",
+} = Astro.props;
+---
+
+<div class="contact-form-field phone-input-field">
+  <label for={id}>{label}</label>
+  <input
+    id={id}
+    type="tel"
+    name={name}
+    autocomplete={autocomplete}
+    placeholder={placeholder}
+    required={required}
+    data-phone-input
+    data-initial-country={initialCountry}
+  />
+</div>
+
+<script>
+  import intlTelInput from "intl-tel-input/intlTelInputWithUtils";
+  import "intl-tel-input/styles";
+
+  const inputs = document.querySelectorAll<HTMLInputElement>("[data-phone-input]");
+
+  inputs.forEach((input) => {
+    if (input.dataset.itiInit === "true") return;
+    input.dataset.itiInit = "true";
+
+    const initialCountry = input.dataset.initialCountry || "au";
+
+    const iti = intlTelInput(input, {
+      initialCountry,
+      separateDialCode: false,
+      strictMode: false,
+      countrySearch: false,
+      formatAsYouType: false,
+      nationalMode: true,
+      matchDropdownWidth: true,
+      countrySelectorMode: "DROPDOWN",
+    });
+
+    const form = input.closest("form");
+    if (!form) return;
+
+    form.addEventListener("submit", () => {
+      if (!input.value.trim()) return;
+      const full = iti.getNumber();
+      if (full) {
+        input.value = full;
+        return;
+      }
+      const data = iti.getSelectedCountryData();
+      const dial = data && data.dialCode ? data.dialCode : "";
+      const digits = input.value.replace(/\D/g, "").replace(/^0+/, "");
+      if (dial && digits) {
+        input.value = `+${dial}${digits}`;
+      }
+    });
+  });
+</script>

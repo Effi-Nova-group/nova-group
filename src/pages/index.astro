@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Marquee from '../components/Marquee.astro';
+import PhoneInput from '../components/PhoneInput.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
@@ -245,10 +246,7 @@ const schema = {
           <input id="contact-company" type="text" name="company" autocomplete="organization" required>
         </div>
 
-        <div class="contact-form-field">
-          <label for="contact-phone">Phone Number*</label>
-          <input id="contact-phone" type="tel" name="phone" autocomplete="tel" required>
-        </div>
+        <PhoneInput id="contact-phone" name="phone" label="Phone Number*" required />
 
         <button type="submit" class="contact-form-submit">Book a Strategy Call</button>
       </form>

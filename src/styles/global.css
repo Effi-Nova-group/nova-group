@@ -619,6 +619,109 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 12px 30px rgba(255, 77, 46, 0.35);
 }
 
+/* ---------- Phone input (intl-tel-input dark theme) ---------- */
+.contact-form .iti {
+  width: 100%;
+  --iti-country-selector-bg: #140605;
+  --iti-hover-color: rgba(255, 77, 46, 0.18);
+  --iti-border-color: rgba(255, 77, 46, 0.35);
+  --iti-icon-color: rgba(255, 255, 255, 0.7);
+}
+.contact-form .iti__country-container {
+  padding: 0;
+}
+.contact-form .iti__selected-country-primary {
+  background: transparent;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0 0.65rem 0 0.85rem;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  transition: background 0.2s ease;
+}
+.contact-form .iti__country-container:not(:has(+ input[disabled])):not(:has(+ input[readonly])) .iti__selected-country-primary:hover,
+.contact-form .iti__country-container:not(:has(+ input[disabled])):not(:has(+ input[readonly])) .iti__selected-country[aria-expanded="true"] .iti__selected-country-primary {
+  background: rgba(255, 77, 46, 0.14);
+}
+.contact-form .iti__country-selector {
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(255, 77, 46, 0.10), transparent 55%),
+    linear-gradient(180deg, rgba(20, 6, 5, 0.98), rgba(10, 3, 2, 0.98));
+  border: 1px solid rgba(255, 77, 46, 0.35) !important;
+  border-radius: 12px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 77, 46, 0.12) inset;
+  color: var(--text);
+  font-family: inherit;
+  overflow: hidden;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  /* Always open below the trigger, cap height, allow inner scroll */
+  top: calc(100% + 6px) !important;
+  bottom: auto !important;
+  height: auto !important;
+  max-height: 280px !important;
+  /* Cap width so JS-set inline width can never overflow the viewport on mobile */
+  max-width: calc(100vw - 4.5rem) !important;
+}
+@media (max-width: 640px) {
+  .contact-form .iti__country-selector {
+    width: calc(100vw - 4.5rem) !important;
+  }
+}
+.contact-form .iti__country-list {
+  background: transparent;
+  border: none;
+  height: auto !important;
+  max-height: 260px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-color: rgba(255, 77, 46, 0.4) transparent;
+}
+.contact-form .iti__country-list::-webkit-scrollbar {
+  width: 8px;
+}
+.contact-form .iti__country-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 77, 46, 0.35);
+  border-radius: 8px;
+}
+.contact-form .iti__country {
+  color: var(--text);
+  padding: 0.55rem 0.9rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  background: transparent;
+}
+.contact-form .iti__country.iti__highlight,
+.contact-form .iti__country:hover {
+  background: rgba(255, 77, 46, 0.18);
+}
+.contact-form .iti__country-name {
+  color: var(--text);
+  flex: 1;
+}
+.contact-form .iti__dial-code {
+  color: var(--muted);
+  margin-left: auto;
+}
+.contact-form .iti__country-list .iti__flag {
+  flex: 0 0 auto;
+}
+/* Fallback: if the dropdown ever renders on a white background, force text black */
+.contact-form .iti__country-selector[style*="background: white"],
+.contact-form .iti__country-selector[style*="background:#fff"],
+.contact-form .iti__country-selector[style*="background: #fff"] {
+  color: #000;
+}
+.contact-form .iti__country-selector[style*="background: white"] .iti__country,
+.contact-form .iti__country-selector[style*="background: white"] .iti__country-name,
+.contact-form .iti__country-selector[style*="background: white"] .iti__dial-code {
+  color: #000;
+}
+
 /* ---------- Footer ---------- */
 .footer {
   padding: 2.5rem 2rem;
