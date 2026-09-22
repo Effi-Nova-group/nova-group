@@ -96,25 +96,21 @@ a { color: inherit; text-decoration: none; }
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
 }
-.hero-video {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.hero-canvas {
-  display: none;
+.hero-video-wrap {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  overflow: hidden;
+  pointer-events: none;
 }
-@media (max-width: 767px) {
-  .hero-video { opacity: 0; pointer-events: none; }
-  .hero-canvas { display: block; }
+.hero-video-wrap #hero-yt-player {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 */
+  min-height: 130vh;
+  min-width: 231vh; /* 16:9 at 130vh */
+  transform: translate(-50%, -50%) scale(1.15);
 }
 .hero-overlay {
   position: absolute;
@@ -123,40 +119,41 @@ a { color: inherit; text-decoration: none; }
     linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.35) 100%);
   pointer-events: none;
 }
-.hero-content {
-  position: relative;
-  width: 100%;
-  max-width: 1400px;
-  padding: 0 3rem 6rem;
-  text-align: left;
-  margin: 0 auto;
-}
-.hero-title {
-  font-size: clamp(2.25rem, 6.5vw, 6rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin: 0;
+.hero-mute-toggle {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 3;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.35);
   color: #ffffff;
-  mix-blend-mode: exclusion;
-  -webkit-mix-blend-mode: exclusion;
-  max-width: 22ch;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 1;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
+.hero-mute-toggle:hover {
+  background: rgba(0,0,0,0.55);
+  border-color: rgba(255,255,255,0.45);
+  transform: scale(1.05);
+}
+.hero-mute-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+.hero-mute-toggle .icon-unmuted { display: none; }
+.hero-mute-toggle.is-muted .icon-muted { display: block; }
+.hero-mute-toggle.is-muted .icon-unmuted { display: none; }
+.hero-mute-toggle:not(.is-muted) .icon-muted { display: none; }
+.hero-mute-toggle:not(.is-muted) .icon-unmuted { display: block; }
 @media (max-width: 767px) {
-  .hero-content { padding: 0 1.5rem 3rem; }
-  .hero-title {
-    font-size: 3rem;
-    line-height: 1.02;
-    /* HTML title is hidden visually — the canvas renders the exclusion-
-       blended version. Kept in the DOM (color: transparent, not display:none)
-       so screen readers still announce it and the layout box the canvas
-       reads from stays intact. */
-    color: transparent;
-    mix-blend-mode: normal;
-  }
+  .hero-mute-toggle { right: 1.25rem; bottom: 1.25rem; }
 }
 .hero-scroll {
   position: absolute;
