@@ -59,7 +59,7 @@ const schema = {
     <div class="hero-video-wrap">
       <iframe
         id="hero-yt-player"
-        src="https://www.youtube-nocookie.com/embed/rEhW2_aorHo?autoplay=1&mute=1&loop=1&playlist=rEhW2_aorHo&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&showinfo=0&enablejsapi=1"
+        src="https://www.youtube-nocookie.com/embed/rEhW2_aorHo?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&showinfo=0&enablejsapi=1"
         title="Background video"
         frameborder="0"
         allow="autoplay; encrypted-media"
@@ -84,10 +84,12 @@ const schema = {
   </section>
 
   <script>
-    // Background video is a plain autoplaying/looping YouTube iframe (no
-    // iframe_api.js load, so it starts immediately). Mute is toggled with a
-    // raw postMessage to the embed's postMessage command API, which the
-    // embed already listens for once enablejsapi=1 is set — no extra script.
+    // Background video is a plain autoplaying YouTube iframe (no iframe_api.js
+    // load, so it starts immediately). We deliberately avoid the loop+playlist
+    // params — YouTube treats that as "playlist mode" and briefly flashes its
+    // own prev/pause/next chrome on load. Instead we loop manually by
+    // listening for the "ended" state over postMessage and seeking back to 0.
+    // Mute is toggled the same lightweight postMessage way.
     const iframe = document.getElementById('hero-yt-player') as HTMLIFrameElement | null;
     const toggle = document.getElementById('hero-mute-toggle') as HTMLButtonElement | null;
     let muted = true;
@@ -100,14 +102,32 @@ const schema = {
     };
     updateToggle();
 
-    const sendCommand = (func: string) => {
-      iframe?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*');
+    const sendCommand = (func: string, args: unknown[] = []) => {
+      iframe?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
     };
 
     toggle?.addEventListener('click', () => {
       muted = !muted;
       sendCommand(muted ? 'mute' : 'unMute');
       updateToggle();
+    });
+
+    iframe?.addEventListener('load', () => {
+      sendCommand('addEventListener', ['onStateChange']);
+    });
+
+    window.addEventListener('message', (event) => {
+      if (!/(^|\.)youtube(-nocookie)?\.com$/.test(new URL(event.origin).hostname)) return;
+      let data: any;
+      try {
+        data = JSON.parse(event.data);
+      } catch {
+        return;
+      }
+      if (data.event === 'onStateChange' && data.info === 0) {
+        sendCommand('seekTo', [0, true]);
+        sendCommand('playVideo');
+      }
     });
   </script>
 
