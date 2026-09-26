@@ -113,18 +113,20 @@ const schema = {
 
     // cc_load_policy=0 only stops captions from auto-loading; if a viewer has
     // "always show captions" turned on in their own YouTube account, the
-    // player still turns them on after load. Force them off explicitly. The
-    // player's message listener isn't guaranteed to be ready the instant the
-    // iframe's "load" event fires, so we retry for a few seconds rather than
-    // firing the command just once.
-    const disableCaptions = () => sendCommand('unloadModule', ['captions']);
+    // player still turns them on after load. Force them off via the postMessage
+    // API instead. unloadModule("captions") fails silently if sent before
+    // YouTube's captions module has actually loaded, so rather than a single
+    // call on load, we re-fire on "onApiChange" — the event YouTube sends when
+    // that module becomes available — and again whenever playback (re)starts.
+    const killCaptions = () => {
+      sendCommand('unloadModule', ['captions']);
+      sendCommand('setOption', ['captions', 'track', {}]);
+    };
 
     iframe?.addEventListener('load', () => {
-      sendCommand('addEventListener', ['onReady']);
       sendCommand('addEventListener', ['onStateChange']);
-      [0, 300, 800, 1500, 3000, 5000].forEach((delay) => {
-        setTimeout(disableCaptions, delay);
-      });
+      sendCommand('addEventListener', ['onApiChange']);
+      killCaptions();
     });
 
     window.addEventListener('message', (event) => {
@@ -135,15 +137,15 @@ const schema = {
       } catch {
         return;
       }
-      if (data.event === 'onReady') {
-        disableCaptions();
+      if (data.event === 'onApiChange') {
+        killCaptions();
       }
       if (data.event === 'onStateChange' && data.info === 0) {
         sendCommand('seekTo', [0, true]);
         sendCommand('playVideo');
       }
       if (data.event === 'onStateChange' && data.info === 1) {
-        disableCaptions();
+        killCaptions();
       }
     });
   </script>
