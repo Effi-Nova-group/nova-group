@@ -59,7 +59,7 @@ const schema = {
     <div class="hero-video-wrap">
       <iframe
         id="hero-yt-player"
-        src="https://www.youtube-nocookie.com/embed/rEhW2_aorHo?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&showinfo=0&enablejsapi=1&cc_load_policy=0&cc_lang_pref=none"
+        src="https://www.youtube-nocookie.com/embed/rEhW2_aorHo?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&showinfo=0&enablejsapi=1&cc_load_policy=0&origin=https://www.thenovagroup.com.au"
         title="Background video"
         frameborder="0"
         allow="autoplay; encrypted-media"
@@ -113,12 +113,18 @@ const schema = {
 
     // cc_load_policy=0 only stops captions from auto-loading; if a viewer has
     // "always show captions" turned on in their own YouTube account, the
-    // player still turns them on after load. Force them off explicitly.
+    // player still turns them on after load. Force them off explicitly. The
+    // player's message listener isn't guaranteed to be ready the instant the
+    // iframe's "load" event fires, so we retry for a few seconds rather than
+    // firing the command just once.
     const disableCaptions = () => sendCommand('unloadModule', ['captions']);
 
     iframe?.addEventListener('load', () => {
+      sendCommand('addEventListener', ['onReady']);
       sendCommand('addEventListener', ['onStateChange']);
-      disableCaptions();
+      [0, 300, 800, 1500, 3000, 5000].forEach((delay) => {
+        setTimeout(disableCaptions, delay);
+      });
     });
 
     window.addEventListener('message', (event) => {
@@ -128,6 +134,9 @@ const schema = {
         data = JSON.parse(event.data);
       } catch {
         return;
+      }
+      if (data.event === 'onReady') {
+        disableCaptions();
       }
       if (data.event === 'onStateChange' && data.info === 0) {
         sendCommand('seekTo', [0, true]);
