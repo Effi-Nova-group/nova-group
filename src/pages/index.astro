@@ -111,13 +111,13 @@ const schema = {
       updateToggle();
     });
 
-    // cc_load_policy=0 only stops captions from auto-loading; if a viewer has
-    // "always show captions" turned on in their own YouTube account, the
-    // player still turns them on after load. Force them off via the postMessage
-    // API instead. unloadModule("captions") fails silently if sent before
-    // YouTube's captions module has actually loaded, so rather than a single
-    // call on load, we re-fire on "onApiChange" — the event YouTube sends when
-    // that module becomes available — and again whenever playback (re)starts.
+    // cc_load_policy=0 only stops captions from auto-loading; this video also
+    // has a default caption track that YouTube can (re)apply after the
+    // captions module reports itself available via "onApiChange" — there's no
+    // further event telling us when that later, async apply happens, so a
+    // single unloadModule/setOption call timed to onApiChange isn't enough on
+    // its own. Re-assert on every relevant event AND on a short interval so
+    // the timing of YouTube's own re-apply can't win the race.
     const killCaptions = () => {
       sendCommand('unloadModule', ['captions']);
       sendCommand('setOption', ['captions', 'track', {}]);
@@ -127,6 +127,12 @@ const schema = {
       sendCommand('addEventListener', ['onStateChange']);
       sendCommand('addEventListener', ['onApiChange']);
       killCaptions();
+      let ticks = 0;
+      const interval = setInterval(() => {
+        killCaptions();
+        ticks += 1;
+        if (ticks >= 20) clearInterval(interval); // ~10s of coverage
+      }, 500);
     });
 
     window.addEventListener('message', (event) => {
@@ -144,7 +150,7 @@ const schema = {
         sendCommand('seekTo', [0, true]);
         sendCommand('playVideo');
       }
-      if (data.event === 'onStateChange' && data.info === 1) {
+      if (data.event === 'onStateChange') {
         killCaptions();
       }
     });
