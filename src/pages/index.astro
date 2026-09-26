@@ -111,8 +111,14 @@ const schema = {
       updateToggle();
     });
 
+    // cc_load_policy=0 only stops captions from auto-loading; if a viewer has
+    // "always show captions" turned on in their own YouTube account, the
+    // player still turns them on after load. Force them off explicitly.
+    const disableCaptions = () => sendCommand('unloadModule', ['captions']);
+
     iframe?.addEventListener('load', () => {
       sendCommand('addEventListener', ['onStateChange']);
+      disableCaptions();
     });
 
     window.addEventListener('message', (event) => {
@@ -126,6 +132,9 @@ const schema = {
       if (data.event === 'onStateChange' && data.info === 0) {
         sendCommand('seekTo', [0, true]);
         sendCommand('playVideo');
+      }
+      if (data.event === 'onStateChange' && data.info === 1) {
+        disableCaptions();
       }
     });
   </script>
