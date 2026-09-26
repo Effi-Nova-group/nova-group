@@ -89,6 +89,7 @@ a { color: inherit; text-decoration: none; }
   height: 100vh;
   min-height: 640px;
   overflow: hidden;
+  background: var(--bg);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -106,11 +107,9 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100vw;
-  height: 56.25vw; /* 16:9 */
-  min-height: 130vh;
-  min-width: 231vh; /* 16:9 at 130vh */
-  transform: translate(-50%, -50%) scale(1.15);
+  width: max(100vw, 177.78vh); /* 16:9 */
+  height: max(100vh, 56.25vw); /* 16:9 */
+  transform: translate(-50%, -50%);
 }
 .hero-overlay {
   position: absolute;
