@@ -57,15 +57,16 @@ const schema = {
 >
   <section class="hero">
     <div class="hero-video-wrap">
-      <iframe
-        id="hero-yt-player"
-        src="https://www.youtube.com/embed/rEhW2_aorHo?si=DtY38sSH2FcdwbzE&autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&showinfo=0&enablejsapi=1&cc_load_policy=0"
-        title="Background video"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
+      <video
+        id="hero-video"
+        src="/videos/hero.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
         aria-hidden="true"
         tabindex="-1"
-      ></iframe>
+      ></video>
     </div>
     <div class="hero-overlay"></div>
     <button type="button" id="hero-mute-toggle" class="hero-mute-toggle" aria-label="Unmute video" aria-pressed="true">
@@ -83,76 +84,22 @@ const schema = {
   </section>
 
   <script>
-    // Background video is a plain autoplaying YouTube iframe (no iframe_api.js
-    // load, so it starts immediately). We deliberately avoid the loop+playlist
-    // params — YouTube treats that as "playlist mode" and briefly flashes its
-    // own prev/pause/next chrome on load. Instead we loop manually by
-    // listening for the "ended" state over postMessage and seeking back to 0.
-    // Mute is toggled the same lightweight postMessage way.
-    const iframe = document.getElementById('hero-yt-player') as HTMLIFrameElement | null;
+    const video = document.getElementById('hero-video') as HTMLVideoElement | null;
     const toggle = document.getElementById('hero-mute-toggle') as HTMLButtonElement | null;
-    let muted = true;
 
     const updateToggle = () => {
-      if (!toggle) return;
+      if (!toggle || !video) return;
+      const muted = video.muted;
       toggle.classList.toggle('is-muted', muted);
       toggle.setAttribute('aria-pressed', String(muted));
       toggle.setAttribute('aria-label', muted ? 'Unmute video' : 'Mute video');
     };
     updateToggle();
 
-    const sendCommand = (func: string, args: unknown[] = []) => {
-      iframe?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
-    };
-
     toggle?.addEventListener('click', () => {
-      muted = !muted;
-      sendCommand(muted ? 'mute' : 'unMute');
+      if (!video) return;
+      video.muted = !video.muted;
       updateToggle();
-    });
-
-    // cc_load_policy=0 only stops captions from auto-loading; this video also
-    // has a default caption track that YouTube can (re)apply after the
-    // captions module reports itself available via "onApiChange" — there's no
-    // further event telling us when that later, async apply happens, so a
-    // single unloadModule/setOption call timed to onApiChange isn't enough on
-    // its own. Re-assert on every relevant event AND on a short interval so
-    // the timing of YouTube's own re-apply can't win the race.
-    const killCaptions = () => {
-      sendCommand('unloadModule', ['captions']);
-      sendCommand('setOption', ['captions', 'track', {}]);
-    };
-
-    iframe?.addEventListener('load', () => {
-      sendCommand('addEventListener', ['onStateChange']);
-      sendCommand('addEventListener', ['onApiChange']);
-      killCaptions();
-      let ticks = 0;
-      const interval = setInterval(() => {
-        killCaptions();
-        ticks += 1;
-        if (ticks >= 20) clearInterval(interval); // ~10s of coverage
-      }, 500);
-    });
-
-    window.addEventListener('message', (event) => {
-      if (!/(^|\.)youtube(-nocookie)?\.com$/.test(new URL(event.origin).hostname)) return;
-      let data: any;
-      try {
-        data = JSON.parse(event.data);
-      } catch {
-        return;
-      }
-      if (data.event === 'onApiChange') {
-        killCaptions();
-      }
-      if (data.event === 'onStateChange' && data.info === 0) {
-        sendCommand('seekTo', [0, true]);
-        sendCommand('playVideo');
-      }
-      if (data.event === 'onStateChange') {
-        killCaptions();
-      }
     });
   </script>
 

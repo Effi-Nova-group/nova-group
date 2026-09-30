@@ -99,7 +99,7 @@ a { color: inherit; text-decoration: none; }
   -webkit-transform: translate3d(0, 0, 0);
 }
 @media (max-width: 767px) {
-  .hero { min-height: 100vh; min-height: 100dvh; }
+  .hero { height: 60vh; height: 60dvh; min-height: 380px; }
 }
 .hero-video-wrap {
   position: absolute;
@@ -107,15 +107,13 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   pointer-events: none;
 }
-.hero-video-wrap #hero-yt-player {
+.hero-video-wrap #hero-video {
   position: absolute;
-  top: 50%;
+  top: 0;
   left: 50%;
-  width: max(100vw, 177.78vh); /* 16:9 */
-  height: max(100vh, 56.25vw); /* 16:9 */
-  width: max(100vw, 177.78dvh);
-  height: max(100dvh, 56.25vw);
-  transform: translate(-50%, -50%);
+  width: auto;
+  height: 100%;
+  transform: translateX(-50%);
 }
 .hero-overlay {
   position: absolute;
