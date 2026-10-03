@@ -109,11 +109,14 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-video-wrap #hero-video {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
-  width: auto;
+  width: 100%;
   height: 100%;
-  transform: translateX(-50%);
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
 }
 .hero-overlay {
   position: absolute;
