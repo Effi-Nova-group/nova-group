@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+const studies = (await getCollection('caseStudies')).sort((a, b) => a.data.order - b.data.order);
+
+const siteUrl = 'https://www.thenovagroup.com.au';
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${siteUrl}/case-studies#collection`,
+  name: 'Case Studies | The Nova Group',
+  description: 'Case studies from The Nova Group — how audience intelligence turned into measurable engagement, bookings and return on ad spend for global brands.',
+  url: `${siteUrl}/case-studies`,
+  publisher: {
+    '@type': 'Organization',
+    '@id': `${siteUrl}/#organization`,
+    name: 'The Nova Group',
+    url: `${siteUrl}/`,
+    logo: `${siteUrl}/images/the_nova_group_aus_logo-1.png`,
+  },
+  hasPart: studies.map((study) => ({
+    '@type': 'Article',
+    headline: study.data.title,
+    description: study.data.metaDescription,
+    url: `${siteUrl}/case-studies/${study.id}`,
+    datePublished: study.data.publishedAt.toISOString(),
+  })),
+};
+---
+<BaseLayout
+  title="Case Studies | The Nova Group"
+  description="Case studies from The Nova Group — how audience intelligence turned into measurable engagement, bookings and return on ad spend for global brands."
+  schema={schema}
+>
+  <header class="page-header">
+    <span class="eyebrow">Case Studies</span>
+    <h1>Audience intelligence, turned into results</h1>
+    <p>How global brands used deep audience understanding to sharpen their content, their media, and their commercial performance.</p>
+  </header>
+
+  <section class="case-list">
+    <div class="case-grid">
+      {studies.map((study) => (
+        <a href={`/case-studies/${study.id}`} class="case-card">
+          <div class="case-card-media">
+            {study.data.heroImage ? (
+              <Image src={study.data.heroImage} alt={`${study.data.client} campaign work by Turba Media`} widths={[480, 760, 1100]} sizes="(max-width: 700px) 100vw, 560px" loading="lazy" />
+            ) : (
+              <div class="case-card-media-fallback"></div>
+            )}
+            {study.data.logo && (
+              <div class="case-card-logo">
+                <Image src={study.data.logo} alt={`${study.data.client} logo`} widths={[160, 320]} sizes="140px" loading="lazy" />
+              </div>
+            )}
+          </div>
+          <div class="case-card-body">
+            <span class="case-card-sector">{study.data.sector}</span>
+            <h2 class="case-card-title">{study.data.title}</h2>
+            <p class="case-card-subtitle">{study.data.subtitle}</p>
+            {study.data.stats.length > 0 && (
+              <ul class="case-card-stats">
+                {study.data.stats.map((stat) => (
+                  <li>
+                    <strong>{stat.value}</strong>
+                    <span>{stat.label}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div class="case-card-meta">
+              <span class="case-card-link">View case study</span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

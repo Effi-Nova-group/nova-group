@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const studies = await getCollection('caseStudies');
+  return studies.map((study) => ({
+    params: { slug: study.id },
+    props: { study },
+  }));
+}
+
+const { study } = Astro.props;
+const { Content } = await render(study);
+
+const siteUrl = 'https://www.thenovagroup.com.au';
+const studyUrl = `${siteUrl}/case-studies/${study.id}`;
+const shareImage = study.data.heroImage ?? study.data.logo;
+const ogImage = shareImage
+  ? new URL(shareImage.src, Astro.site ?? siteUrl).toString()
+  : undefined;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${studyUrl}#article`,
+  mainEntityOfPage: studyUrl,
+  headline: study.data.title,
+  description: study.data.metaDescription,
+  url: studyUrl,
+  datePublished: study.data.publishedAt.toISOString(),
+  dateModified: study.data.publishedAt.toISOString(),
+  articleSection: study.data.sector,
+  about: study.data.client,
+  inLanguage: 'en-AU',
+  ...(shareImage ? { image: [new URL(shareImage.src, siteUrl).toString()] } : {}),
+  publisher: {
+    '@type': 'Organization',
+    '@id': `${siteUrl}/#organization`,
+    name: 'The Nova Group',
+    url: `${siteUrl}/`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${siteUrl}/images/the_nova_group_aus_logo-1.png`,
+    },
+  },
+};
+---
+<BaseLayout
+  title={study.data.metaTitle}
+  description={study.data.metaDescription}
+  ogType="article"
+  ogImage={ogImage}
+  schema={schema}
+>
+  <article class="case">
+    <div class="case-head">
+      <a href="/case-studies" class="article-back">← All case studies</a>
+      <span class="article-category">{study.data.sector}</span>
+      <div class="case-head-grid">
+        <div>
+          <h1>{study.data.title}</h1>
+          <p class="case-subtitle">{study.data.subtitle}</p>
+        </div>
+        {study.data.logo && (
+          <div class="case-head-logo">
+            <Image src={study.data.logo} alt={`${study.data.client} logo`} widths={[200, 400]} sizes="180px" loading="eager" />
+          </div>
+        )}
+      </div>
+    </div>
+
+    {study.data.stats.length > 0 && (
+      <ul class="case-stats">
+        {study.data.stats.map((stat) => (
+          <li>
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    {study.data.heroImage && (
+      <div class="case-hero">
+        <Image src={study.data.heroImage} alt={`${study.data.client} campaign work by Turba Media`} widths={[640, 960, 1400, 1920]} sizes="(max-width: 991px) 100vw, 1100px" loading="eager" />
+      </div>
+    )}
+
+    <div class="article-body case-body">
+      <Content />
+
+      <div class="article-cta">
+        <h3>{study.data.ctaHeading}</h3>
+        <p>{study.data.ctaBody}</p>
+        <a href="/#contact">Get started</a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

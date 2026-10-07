@@ -42,20 +42,37 @@ a { color: inherit; text-decoration: none; }
 @media (hover: hover) {
   .nav-logo:hover img { transform: scale(1.04); }
 }
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .nav { padding: 0.9rem 8rem; }
+}
+@media (max-width: 1200px) {
+  .nav { padding: 0.9rem 4rem; }
 }
 @media (max-width: 767px) {
   .nav { padding: 0.85rem 1.5rem; }
   .nav-logo img { height: 72px; }
 }
-.nav-links { display: flex; gap: 2rem; }
+@media (max-width: 400px) {
+  .nav { padding: 0.85rem 1rem; }
+  .nav-logo img { height: 60px; }
+}
+/* pulled out of the flex flow and pinned to the middle: with space-between,
+   the wide logo and narrower CTA push the links off true centre */
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .nav-links a {
   font-size: 0.9rem;
   color: var(--muted);
   transition: color 0.2s ease;
+  white-space: nowrap;
 }
 .nav-links a:hover { color: var(--text); }
+.nav-links a[aria-current='page'] { color: var(--text); }
 .nav-cta {
   display: inline-flex;
   align-items: center;
@@ -77,9 +94,71 @@ a { color: inherit; text-decoration: none; }
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(255, 77, 46, 0.35);
 }
-@media (max-width: 767px) {
+/* hamburger + drop-down panel: the logo alone is ~236px wide on a phone,
+   so the inline links can't fit beside it below ~992px */
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--text);
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.nav-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+.nav-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1.5rem 1.5rem;
+  background: #000;
+  border-top: 1px solid var(--border);
+}
+.nav-menu a:not(.nav-menu-cta) {
+  padding: 0.9rem 0;
+  font-size: 1rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.nav-menu a[aria-current='page'] { color: var(--text); }
+.nav-menu-cta {
+  margin-top: 1.25rem;
+  padding: 0.9rem 2rem;
+  text-align: center;
+  color: #ffffff;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(#000, #000) padding-box,
+    linear-gradient(90deg, var(--accent-red) 0%, #ffffff 50%, var(--accent-red) 100%) border-box;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+@media (max-width: 992px) {
   .nav-links { display: none; }
   .nav-cta { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-menu.is-open { display: flex; }
 }
 
 /* ---------- Block 01 — Hero video ---------- */
@@ -949,7 +1028,8 @@ a { color: inherit; text-decoration: none; }
   margin: 2.25rem 0 0.75rem;
 }
 .article-body p { margin: 0 0 1.25rem; }
-.article-body ul { padding-left: 1.25rem; margin: 0 0 1.5rem; }
+.article-body ul,
+.article-body ol { padding-left: 1.25rem; margin: 0 0 1.5rem; }
 .article-body li { margin-bottom: 0.6rem; }
 .article-body strong { color: var(--text); font-weight: 600; }
 
@@ -982,3 +1062,257 @@ a { color: inherit; text-decoration: none; }
   transition: filter 0.2s ease;
 }
 .article-cta a:hover { filter: brightness(1.15); }
+
+/* ==========================================================
+   CASE STUDIES (listing + detail) — /case-studies
+   ========================================================== */
+.case-list { padding: 3rem 2rem 8rem; }
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+@media (max-width: 700px) {
+  .case-grid { grid-template-columns: 1fr; }
+}
+
+.case-card {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+}
+.case-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.18);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+}
+.case-card-media {
+  aspect-ratio: 16 / 9;
+  background: #0f1116;
+  position: relative;
+  overflow: hidden;
+}
+.case-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.case-card:hover .case-card-media img { transform: scale(1.04); }
+.case-card-media-fallback {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 15% 110%, rgba(255, 77, 46, 0.35) 0%, rgba(255, 77, 46, 0) 60%),
+    linear-gradient(145deg, #15181f 0%, #0b0d11 100%);
+}
+
+/* client logo chip — logos arrive on mixed (often white) backgrounds,
+   so a light tile keeps them legible and consistent on the dark theme */
+.case-card-logo {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 2;
+  width: 112px;
+  height: 56px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.case-card-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: none;
+}
+.case-card:hover .case-card-logo img { transform: none; }
+
+.case-card-body {
+  padding: 1.6rem 1.6rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  flex: 1;
+}
+.case-card-sector {
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent-red);
+  font-weight: 600;
+}
+.case-card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  margin: 0;
+}
+.case-card-subtitle {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+}
+.case-card-stats {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0;
+  margin: 0.4rem 0 0;
+}
+.case-card-stats li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.03);
+}
+.case-card-stats strong {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  line-height: 1;
+}
+.case-card-stats span {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.case-card-meta {
+  margin-top: auto;
+  padding-top: 1.1rem;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 0.82rem;
+}
+.case-card-link {
+  color: var(--text);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.case-card-link::after {
+  content: '→';
+  transition: transform 0.2s ease;
+}
+.case-card:hover .case-card-link::after { transform: translateX(4px); }
+
+/* ---------- Case study detail ---------- */
+.case {
+  padding: 10rem 2rem 6rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.case-head { margin-bottom: 2.5rem; }
+.case-head-grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.case h1 {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+}
+.case-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+  max-width: 48ch;
+}
+.case-head-logo {
+  flex: 0 0 auto;
+  width: 168px;
+  height: 84px;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.case-head-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+@media (max-width: 767px) {
+  .case-head-grid { flex-direction: column-reverse; align-items: flex-start; gap: 1.5rem; }
+  .case-head-logo { width: 140px; height: 70px; }
+}
+
+/* flex (not grid auto-fit) so the tiles reflow for any stat count: a lone
+   stat stays 240px instead of stretching, and 4 still pair up on mobile */
+.case-stats {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0;
+  margin: 0 0 3rem;
+}
+.case-stats li {
+  flex: 1 1 160px;
+  max-width: 240px;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  text-align: center;
+}
+.case-stats strong {
+  display: block;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--accent-red);
+  margin-bottom: 0.5rem;
+}
+.case-stats span {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.case-hero {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #0f1116;
+  margin: 0 0 3.5rem;
+}
+.case-hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.case-body { max-width: 760px; margin: 0 auto; }
